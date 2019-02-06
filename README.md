@@ -1,8 +1,6 @@
 # Gym_API
 iman gym api
 
-pip3 install virtualenv
-
 virtualenv venv
 
 cd venv/scripts
