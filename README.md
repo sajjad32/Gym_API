@@ -3,6 +3,10 @@ iman gym api
 
 virtualenv venv
 
+cd venv/scripts
+
+activate
+
 pip install -r requirements.txt
 
 create new database in phpmyadmin call "gym"
