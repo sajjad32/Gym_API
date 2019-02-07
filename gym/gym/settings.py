@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django_mysql',
     'corsheaders',
     'user',
-
 ]
 
 MIDDLEWARE = [
