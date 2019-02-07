@@ -9,7 +9,7 @@ activate
 
 pip install -r requirements.txt
 
-create new database in phpmyadmin call "gym"
+create new database in phpmyadmin call "gym" and set the encoding to "utf8_bin"
 
 python manage.py makemigrations
 
