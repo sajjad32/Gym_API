@@ -14,14 +14,22 @@ class User(models.Model):
     image = models.TextField(null=True)
     flag = models.BooleanField(default=False)
 
+
 class Present(models.Model):
     date = models.DateField(auto_now=False)
     enterTime = models.TimeField()
     outTime = models.TimeField(null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+
 class Payment(models.Model):
-    date = models.DateField()
+    date = models.DateField(auto_now=False)
     price = models.IntegerField()
     method = models.CharField(max_length=10)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class Exercise(models.Model):
+    date = models.DateField(auto_now=False)
+    details = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)

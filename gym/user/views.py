@@ -12,22 +12,26 @@ from .models import *
 
 @method_decorator(csrf_exempt)
 def index(request):
-    req = json.loads(request.body)['users_id']
-    users = User.objects.all().values()
-    users = users.order_by('-registerDate')[req['startIndex']:(req['startIndex'] + req['recordsPerPage'])]
-    array_length = users.count()
-    return JsonResponse({'users': list(users), 'count': array_length})
+    if (request.method == 'POST'):
+        req = json.loads(request.body)['users_id']
+        users = User.objects.all().values()
+        users = users.order_by('-registerDate')[req['startIndex']:(req['startIndex'] + req['recordsPerPage'])]
+        array_length = users.count()
+        return JsonResponse({'users': list(users), 'count': array_length})
+    return JsonResponse({'status': 500, 'message': 'request method error'})
+
 
 def search(request):
     users = User.objects.all().values()
     return JsonResponse({'users': list(users)})
 
+
 def show(request, id):
     user = User.objects.filter(id=id).values()
     presents = Present.objects.filter(user_id=id).values()
     payments = Payment.objects.filter(user_id=id).values()
-    # return JsonResponse({'user': list(user), 'presents': list(presents), 'payments': list(payments)})
-    return JsonResponse({'user': list(user), 'presents': list(presents), 'payments': list(payments)})
+    exercises = Exercise.objects.filter(user_id=id).values()
+    return JsonResponse({'user': list(user), 'presents': list(presents), 'payments': list(payments), 'exercises': list(exercises)})
 
 
 @method_decorator(csrf_exempt)
@@ -120,6 +124,23 @@ def addPayment(request, id):
 
 
 @method_decorator(csrf_exempt)
+def addExercise(request):
+    if(request.method == 'POST'):
+        g_today = datetime.datetime.now().strftime("%Y-%m-%d")
+        p_today = Gregorian(g_today).persian_string()
+        req = json.loads(request.body)['exercise']
+        new_exercise = Exercise(details=req['detail'], user_id=req['user_id'], date=p_today)
+        new_exercise.save()
+        return JsonResponse({'status': 200, 'message': 'exercise added successfully'})
+    return JsonResponse({'status': 500, 'message': 'request method error'})
+
+
+@method_decorator(csrf_exempt)
+def updateExercise(request):
+    pass
+
+
+@method_decorator(csrf_exempt)
 def userDiagram(request):
     if(request.method == 'POST'):
         req = json.loads(request.body)['data']
@@ -136,11 +157,9 @@ def userDiagram(request):
 @method_decorator(csrf_exempt)
 def uploadUserImage(request):
     if (request.method == 'POST'):
-        print("helllllllllllllllllllllllllllllllo")
         req = json.loads(request.body)['data']
         user = User.objects.filter(id=req['user_id']).values()
         user.update(image=req['image'])
-        print('okkkkkkkkkkkkkkkkkkkkkkkkkk')
         return JsonResponse({'status': 200, 'message': 'image added successfully'})
     return JsonResponse({'status': 500, 'message': 'request method error'})
 

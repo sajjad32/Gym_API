@@ -18,6 +18,9 @@ urlpatterns = [
     url(r'^payments/$', views.paymentList, name='paymentList'),
     url(r'^payments/add/(?P<id>[0-9]+)', views.addPayment, name='addPayment'),
 
+    url(r'^exercise/add', views.addExercise, name='addExercise'),
+    url(r'^exercise/update/(?P<id>[0-9]+)', views.updateExercise, name='updateExercise'),
+
     url(r'^user-diagram/$', views.userDiagram, name='userDiagram'),
 
     url(r'^upload-user-image/$', views.uploadUserImage, name='uploadUserImage'),
