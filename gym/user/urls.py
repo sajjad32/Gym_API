@@ -9,6 +9,8 @@ urlpatterns = [
     url(r'^users/update/(?P<id>[0-9]+)', views.update, name='update'),
     url(r'^users/delete/(?P<id>[0-9]+)', views.delete, name='delete'),
 
+    url(r'^search-users/$', views.search, name='searchUsers'),
+
     url(r'^presents/$', views.todayPresence, name='todayPresence'),
     url(r'^presents/enter/(?P<id>[0-9]+)', views.addEnter, name='enter'),
     url(r'^presents/out/(?P<id>[0-9]+)', views.addOut, name='out'),

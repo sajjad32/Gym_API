@@ -10,7 +10,15 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import *
 
 
+@method_decorator(csrf_exempt)
 def index(request):
+    req = json.loads(request.body)['users_id']
+    users = User.objects.all().values()
+    users = users.order_by('-registerDate')[req['startIndex']:(req['startIndex'] + req['recordsPerPage'])]
+    array_length = users.count()
+    return JsonResponse({'users': list(users), 'count': array_length})
+
+def search(request):
     users = User.objects.all().values()
     return JsonResponse({'users': list(users)})
 
@@ -53,12 +61,16 @@ def delete(request, id):
     return JsonResponse({'status': 500, 'message': 'request method error'})
 
 
+@method_decorator(csrf_exempt)
 def todayPresence(request):
-    if(request.method == 'GET'):
+    if(request.method == 'POST'):
         g_today = datetime.datetime.now().strftime("%Y-%m-%d")
         p_today = Gregorian(g_today).persian_string()
+        req = json.loads(request.body)['today']
         presents = Present.objects.filter(date=p_today).select_related('user').values('user__name', 'enterTime', 'outTime')
-        return JsonResponse({'presents': list(presents)})
+        array_length = presents.count()
+        presents = presents.order_by('-enterTime')[req['startIndex']:(req['startIndex']+req['recordsPerPage'])]
+        return JsonResponse({'presents': list(presents), 'count': array_length})
     return JsonResponse({'status': 500, 'message': 'request method error'})
 
 
@@ -86,9 +98,11 @@ def addOut(request, id):
     return JsonResponse({'status': 500, 'message': 'request method error'})
 
 
+@method_decorator(csrf_exempt)
 def paymentList(request):
-    if(request.method == 'GET'):
-        payments = Payment.objects.select_related('user').values('user__name', 'date', 'price', 'method')
+    if(request.method == 'POST'):
+        req = json.loads(request.body)['req_month']
+        payments = Payment.objects.filter(date__range=[req['start_month'], req['end_month']]).select_related('user').values('user__name', 'date', 'price', 'method')
         return JsonResponse({'payments': list(payments)})
     return JsonResponse({'status': 500, 'message': 'request method error'})
 
